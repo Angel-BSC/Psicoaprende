@@ -1,0 +1,20 @@
+name: psicoaprende
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: psicoaprende
+      POSTGRES_USER: psicoaprende
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Configura POSTGRES_PASSWORD en .env}
+    ports:
+      - "127.0.0.1:54329:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U psicoaprende -d psicoaprende"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+volumes:
+  postgres-data:

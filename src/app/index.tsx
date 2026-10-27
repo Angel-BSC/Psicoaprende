@@ -1,98 +1,174 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
+import { router } from 'expo-router';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { AppButton } from '@/components/app-button';
+import { colors, radii, spacing, typography } from '@/constants/design';
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
+export default function WelcomeScreen() {
   return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.backgroundShapeOne} />
+      <View style={styles.backgroundShapeTwo} />
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+      <View style={styles.brandRow}>
+        <View style={styles.logo}>
+          <Text style={styles.logoText}>ψ</Text>
+        </View>
+        <Text style={styles.brand}>PsicoAprende</Text>
+      </View>
 
-export default function HomeScreen() {
-  return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
+      <View style={styles.hero}>
+        <View style={styles.illustration}>
+          <View style={styles.brainBubble}>
+            <Text style={styles.brain}>🧠</Text>
+          </View>
+          <View style={styles.sparkOne} />
+          <View style={styles.sparkTwo} />
+        </View>
 
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
+        <Text style={styles.eyebrow}>ESTUDIA A TU RITMO</Text>
+        <Text style={styles.title}>Semiología que se{`\n`}entiende y se practica</Text>
+        <Text style={styles.subtitle}>
+          Repasa tu material de clase con conceptos breves, preguntas explicadas y referencias al PDF de semiología.
+        </Text>
+      </View>
 
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
-
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+      <View style={styles.actions}>
+        <AppButton label="Crear mi cuenta" onPress={() => router.push('/register')} />
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => router.push('/login')}
+          style={({ pressed }) => [styles.loginButton, pressed && styles.pressed]}>
+          <Text style={styles.loginText}>Ya tengo una cuenta</Text>
+        </Pressable>
+        <Text style={styles.disclaimer}>Contenido educativo. No reemplaza atención profesional.</Text>
+      </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
-  },
   safeArea: {
     flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
+    backgroundColor: colors.background,
+    overflow: 'hidden',
   },
-  heroSection: {
+  content: { flexGrow: 1, paddingHorizontal: 24, width: '100%', maxWidth: 540, alignSelf: 'center' },
+  backgroundShapeOne: {
+    position: 'absolute',
+    width: 260,
+    height: 260,
+    borderRadius: 130,
+    backgroundColor: colors.mintSoft,
+    top: -110,
+    right: -100,
+  },
+  backgroundShapeTwo: {
+    position: 'absolute',
+    width: 180,
+    height: 180,
+    borderRadius: 90,
+    backgroundColor: colors.lilacSoft,
+    bottom: 40,
+    left: -110,
+  },
+  brandRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, paddingTop: spacing.sm },
+  logo: {
+    width: 38,
+    height: 38,
+    borderRadius: 13,
     alignItems: 'center',
     justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
+    backgroundColor: colors.primary,
+  },
+  logoText: { color: colors.white, fontSize: 24, fontWeight: '800' },
+  brand: { color: colors.ink, fontSize: 19, fontWeight: '800' },
+  hero: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: spacing.lg },
+  illustration: {
+    width: 164,
+    height: 164,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: spacing.xl,
+  },
+  brainBubble: {
+    width: 144,
+    height: 144,
+    borderRadius: 48,
+    backgroundColor: colors.white,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: colors.border,
+    shadowColor: colors.primary,
+    shadowOpacity: 0.12,
+    shadowRadius: 22,
+    shadowOffset: { width: 0, height: 12 },
+    elevation: 4,
+    transform: [{ rotate: '-3deg' }],
+  },
+  brain: { fontSize: 72, transform: [{ rotate: '3deg' }] },
+  sparkOne: {
+    position: 'absolute',
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: colors.accent,
+    top: 2,
+    right: 4,
+  },
+  sparkTwo: {
+    position: 'absolute',
+    width: 13,
+    height: 13,
+    borderRadius: 4,
+    backgroundColor: colors.secondary,
+    bottom: 12,
+    left: 2,
+    transform: [{ rotate: '35deg' }],
+  },
+  eyebrow: {
+    color: colors.primary,
+    fontSize: 12,
+    fontWeight: '800',
+    letterSpacing: 1.8,
+    marginBottom: spacing.sm,
   },
   title: {
+    color: colors.ink,
+    fontSize: typography.hero,
+    lineHeight: 39,
+    fontWeight: '700',
     textAlign: 'center',
+    letterSpacing: -1,
   },
-  code: {
-    textTransform: 'uppercase',
+  subtitle: {
+    color: colors.inkMuted,
+    fontSize: typography.body,
+    lineHeight: 24,
+    textAlign: 'center',
+    marginTop: spacing.md,
+    maxWidth: 350,
   },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
+  actions: { gap: spacing.sm, paddingBottom: spacing.lg },
+  loginButton: {
+    minHeight: 54,
+    borderRadius: radii.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1.5,
+    borderColor: colors.primary,
+    backgroundColor: colors.white,
   },
+  loginText: { color: colors.primaryDark, fontSize: typography.body, fontWeight: '800' },
+  disclaimer: {
+    color: colors.inkFaint,
+    fontSize: 11,
+    lineHeight: 16,
+    textAlign: 'center',
+    marginTop: spacing.xs,
+  },
+  pressed: { opacity: 0.75 },
 });
